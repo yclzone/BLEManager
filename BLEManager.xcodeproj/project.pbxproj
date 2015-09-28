@@ -13,6 +13,7 @@
 		F2ED711D1BB7B9500079C226 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F2ED711B1BB7B9500079C226 /* Main.storyboard */; };
 		F2ED711F1BB7B9500079C226 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F2ED711E1BB7B9500079C226 /* Assets.xcassets */; };
 		F2ED71221BB7B9500079C226 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F2ED71201BB7B9500079C226 /* LaunchScreen.storyboard */; };
+		F2ED712C1BB7B98D0079C226 /* BLEManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F2ED712B1BB7B98D0079C226 /* BLEManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,8 @@
 		F2ED711E1BB7B9500079C226 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F2ED71211BB7B9500079C226 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F2ED71231BB7B9500079C226 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F2ED712A1BB7B98D0079C226 /* BLEManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLEManager.h; sourceTree = "<group>"; };
+		F2ED712B1BB7B98D0079C226 /* BLEManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLEManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +61,7 @@
 		F2ED71111BB7B9500079C226 /* BLEManager */ = {
 			isa = PBXGroup;
 			children = (
+				F2ED71291BB7B97D0079C226 /* BLE */,
 				F2ED71151BB7B9500079C226 /* AppDelegate.h */,
 				F2ED71161BB7B9500079C226 /* AppDelegate.m */,
 				F2ED71181BB7B9500079C226 /* ViewController.h */,
@@ -77,6 +81,15 @@
 				F2ED71131BB7B9500079C226 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F2ED71291BB7B97D0079C226 /* BLE */ = {
+			isa = PBXGroup;
+			children = (
+				F2ED712A1BB7B98D0079C226 /* BLEManager.h */,
+				F2ED712B1BB7B98D0079C226 /* BLEManager.m */,
+			);
+			path = BLE;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -150,6 +163,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F2ED711A1BB7B9500079C226 /* ViewController.m in Sources */,
+				F2ED712C1BB7B98D0079C226 /* BLEManager.m in Sources */,
 				F2ED71171BB7B9500079C226 /* AppDelegate.m in Sources */,
 				F2ED71141BB7B9500079C226 /* main.m in Sources */,
 			);
