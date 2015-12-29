@@ -123,6 +123,7 @@
 				TargetAttributes = {
 					F2ED710E1BB7B9500079C226 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = 7955BVLGNM;
 					};
 				};
 			};
@@ -277,7 +278,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = BLEManager/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yclzone.BLEManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -288,7 +291,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = BLEManager/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yclzone.BLEManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -314,6 +319,7 @@
 				F2ED71281BB7B9500079C226 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

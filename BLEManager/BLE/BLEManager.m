@@ -8,8 +8,8 @@
 
 #import "BLEManager.h"
 
-static NSString * const CharacteristicForWrite  = @"";
-static NSString * const CharacteristicForRead   = @"";
+static NSString * const CharacteristicForWrite  = @"FFF1";
+static NSString * const CharacteristicForRead   = @"FFF0";
 
 @interface BLEManager ()<CBCentralManagerDelegate, CBPeripheralDelegate>
 /** centralManager */
@@ -20,6 +20,12 @@ static NSString * const CharacteristicForRead   = @"";
 
 /** discoverdPeripherals */
 @property (strong, nonatomic) NSMutableArray *discoverdPeripherals;
+
+/** connected */
+@property (nonatomic, assign, getter=isConnected) BOOL connected;
+
+/** 特性 */
+@property (nonatomic, strong) CBCharacteristic *characteristic;
 @end
 
 @implementation BLEManager
@@ -66,6 +72,11 @@ static NSString * const CharacteristicForRead   = @"";
                                     type:CBCharacteristicWriteWithResponse];
 }
 
+- (void)readValue {
+
+    [self.peripheralConnected readValueForCharacteristic:self.characteristic];
+}
+
 
 #pragma mark - CBCentralManagerDelegate
 /** 蓝牙状态改变 */
@@ -102,22 +113,35 @@ static NSString * const CharacteristicForRead   = @"";
  didDiscoverPeripheral:(nonnull CBPeripheral *)peripheral
      advertisementData:(nonnull NSDictionary<NSString *,id> *)advertisementData
                   RSSI:(nonnull NSNumber *)RSSI {
-    if (self.discoverdPeripherals.count == 0) {
-        [self.discoverdPeripherals addObject:peripheral];
-    } else {
-        BOOL isNew = YES;
-        for (CBPeripheral *aPeripheral in self.discoverdPeripherals) {
-            if ([aPeripheral.identifier.UUIDString isEqualToString:peripheral.identifier.UUIDString]) {
-                isNew = NO;
-                break;
-            } else {
-                
-            }
-        }
-        if (isNew) {
-            [self.discoverdPeripherals addObject:peripheral];
-        }
+//    if (self.discoverdPeripherals.count == 0) {
+//        [self.discoverdPeripherals addObject:peripheral];
+//    } else {
+//        BOOL isNew = YES;
+//        for (CBPeripheral *aPeripheral in self.discoverdPeripherals) {
+//            if ([aPeripheral.identifier.UUIDString isEqualToString:peripheral.identifier.UUIDString]) {
+//                isNew = NO;
+//                break;
+//            } else {
+//                
+//            }
+//        }
+//        if (isNew) {
+//            [self.discoverdPeripherals addObject:peripheral];
+//        }
+//    }
+//    
+//    if ([peripheral.name isEqualToString:@"yuejing"]) {
+//        NSLog(@"%@", peripheral);
+//        self.peripheralConnected = peripheral;
+//        
+//        [self connectPeripheral:peripheral];
+//    }
+    
+    if ([self.delegate respondsToSelector:@selector(manager:didDiscoverPeripheral:RSSI:)]) {
+        [self.delegate manager:self didDiscoverPeripheral:peripheral RSSI:RSSI];
     }
+    
+    [self connectPeripheral:peripheral];
 }
 
 /** 连接设备失败 */
@@ -125,17 +149,25 @@ static NSString * const CharacteristicForRead   = @"";
 didFailToConnectPeripheral:(nonnull CBPeripheral *)peripheral
                  error:(nullable NSError *)error {
     NSLog(@"Fail to connect peripheral %@, ERROR: %@", peripheral.identifier.UUIDString, error.localizedDescription);
+    if ([self.delegate respondsToSelector:@selector(manager:didFailToConnectPeripheral:error:)]) {
+        [self.delegate manager:self didFailToConnectPeripheral:peripheral error:error];
+    }
 }
 
 /** 连接设备成功 */
 - (void)centralManager:(nonnull CBCentralManager *)central
   didConnectPeripheral:(nonnull CBPeripheral *)peripheral {
     self.peripheralConnected = peripheral;
-    self.peripheralConnected.delegate = self;
+//    self.peripheralConnected.delegate = self;
+    peripheral.delegate = self;
     
-    NSArray *services = @[[CBUUID UUIDWithString:@"xxx"],
-                          [CBUUID UUIDWithString:@"xxxxx"]];
-    [self.peripheralConnected discoverServices:services];
+    self.connected = YES;
+    
+    NSLog(@"链接成功");
+    
+//    NSArray *services = @[[CBUUID UUIDWithString:@"xxx"],
+//                          [CBUUID UUIDWithString:@"xxxxx"]];
+    [peripheral discoverServices:nil];
 }
 
 /** 设备断开 */
@@ -143,6 +175,7 @@ didFailToConnectPeripheral:(nonnull CBPeripheral *)peripheral
     didDisconnectPeripheral:(nonnull CBPeripheral *)peripheral
                       error:(nullable NSError *)error {
     NSLog(@"Disconnect peripheral %@, ERROR: %@", peripheral.identifier.UUIDString, error.localizedDescription);
+    self.connected = NO;
 }
 
 
@@ -151,10 +184,10 @@ didFailToConnectPeripheral:(nonnull CBPeripheral *)peripheral
 - (void)peripheral:(nonnull CBPeripheral *)peripheral
     didDiscoverServices:(nullable NSError *)error {
     for (CBService *service in peripheral.services) {
-        if ([service.UUID.UUIDString isEqualToString:@"xxxx"]) {
-            NSLog(@"service = %@", service.UUID.UUIDString);
+        if ([service.UUID.UUIDString isEqualToString:@"FFF0"]) {
+            NSLog(@"service: %@", service.UUID.UUIDString);
             
-            [self.peripheralConnected discoverCharacteristics:nil
+            [peripheral discoverCharacteristics:nil
                                                    forService:service];
         }
     }
@@ -166,9 +199,13 @@ didFailToConnectPeripheral:(nonnull CBPeripheral *)peripheral
                                    error:(nullable NSError *)error {
     for (CBCharacteristic *characteristic in service.characteristics) {
         if ([characteristic.UUID.UUIDString isEqualToString:CharacteristicForWrite]) {
-            //
+            
+            self.characteristic = characteristic;
+            
+//            [peripheral readValueForCharacteristic:characteristic];
+            
         }
-        NSLog(@"%@", characteristic.UUID.UUIDString);
+        NSLog(@"characteristic: %@", characteristic.UUID.UUIDString);
     }
 }
 
@@ -183,7 +220,11 @@ didFailToConnectPeripheral:(nonnull CBPeripheral *)peripheral
 - (void)peripheral:(nonnull CBPeripheral *)peripheral
     didUpdateValueForCharacteristic:(nonnull CBCharacteristic *)characteristic
                               error:(nullable NSError *)error {
-    NSLog(@"Characteristic %@ update value %@", characteristic, characteristic.value);
+    NSLog(@"\nCharacteristic %@ \nupdate value %@", characteristic, characteristic.value);
+    
+    if ([self.delegate respondsToSelector:@selector(manager:didUpdateValueForCharacteristic:error:)]) {
+        [self.delegate manager:self didUpdateValueForCharacteristic:characteristic error:error];
+    }
 }
 
 #pragma mark - Getter && Setter
